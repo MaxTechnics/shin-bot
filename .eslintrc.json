@@ -1,0 +1,48 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2020": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 11
+    },
+    "rules": {
+        "indent": [
+            "error",
+            "tab",
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always",
+            {
+                "omitLastInOneLineBlock": true
+            }
+        ],
+        "semi-spacing": "error",
+        "no-extra-semi": "error",
+        "spaced-comment": "warn",
+        "semi-style": [
+            "error",
+            "last"
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "no-undef": "off",
+        "no-unused-vars": "off",
+        "no-case-declarations": "off",
+        "no-trailing-spaces": ["error"],
+		"no-var": "error",
+        "prefer-const": "error",
+        "no-multi-spaces": "error"
+    }
+}

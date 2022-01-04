@@ -1,0 +1,17 @@
+name: CI
+on: [push, pull_request, workflow_dispatch] # workflow_dispatch allows you to run this workflow manually from the Actions tab
+
+jobs:
+  Linting:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Installs modules
+      - name: Install ESLint
+        run: npm i -g eslint
+
+      # ESLint
+      - name: Run ESLint
+        run: eslint . --ext .js,.jsx,.ts,.tsx

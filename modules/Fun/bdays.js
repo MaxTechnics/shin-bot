@@ -1,0 +1,105 @@
+const { Op: { like } } = require('sequelize');
+const { isEven } = require('../../utils/isEven.js');
+const { getLongestString } = require('../../utils/getLongestString.js');
+const BlockPaginate = require('../../utils/blockPagination.js');
+const { firesObjectifier } = require('../../utils/firesObjectifier.js');
+
+module.exports = {
+	name: 'bdays',
+	helpTitle: 'Birthdays',
+	category: 'Fun',
+	usage: `bdays (name)
+    bdays add [name] [month] [day]
+    bdays remove [name]
+	bdays sort {name, date}`,
+	description: 'Check the birthdays of someone, sort them, or add and remove birthdays!',
+	isHidden: false,
+	aliases: ['birthdays', 'bd'],
+	cooldown: 0,
+	execute: async function(client, message, args) {
+		if (!args[1]) { // bdays, bdays user
+			if (!args[0] || args[0] == 'list' || args.join(' ') == 'sort date') { // bdays
+
+				const dbData = (await client.birthdays.findAll());
+				const longestName = getLongestString(dbData.map(function(e) { return e.name })).length;
+
+				const users = dbData.sort((a, b) => a.date - b.date)
+					.map(t => {
+						const date = new Date(t.date);
+						return `${t.name.padEnd(longestName + 2, '.')}${firesObjectifier(date.getDate())} ${date.toLocaleString('default', { month: 'long' })}`;
+					});
+				return this.list(message, users);
+
+			} else {
+				const user = client.birthdays.findOne({ where: { name: { [like]: args.join(' ') } } });
+				if (!user) return message.channel.send('Sorry, there is nothing I can help with here.');
+				message.channel.send(`${user.name}'s birthday is in <t:${Math.floor(user.date.getMilliseconds() / 1000)}>'`);
+			}
+		} else {
+			switch (args[0]) {
+				case 'add': {
+					const user = await client.birthdays.findOne({ where: { name: { [like]: args[1] } } });
+					if (user) return message.channel.send('This user has already been added!');
+					const toadd = args[1].replace(/[-[\]{}()*+?\`.,\\^$|#\s]/g, '');
+					if (!toadd) return message.channel.send('That\'s not a valid name buddy');
+					const date = new Date(args.slice(1).join(' '));
+					if (isNaN(date)) return message.channel.send('Invalid date provided.');
+					await client.birthdays.create({
+						name: toadd,
+						date
+					});
+					message.channel.send(`Added ${toadd}'s birthday!`);
+					break;
+				}
+				case 'remove':
+				case 'rm':
+				case 'del':
+				case 'delete': {
+					const user = await client.birthdays.findOne({ where: { name: { [like]: args[1] } } });
+					if (!user) return message.channel.send('This user doesn\'t exist!');
+					await user.destroy();
+					message.channel.send(`Deleted ${args[1]}'s birthday entry.`);
+					break;
+				}
+				case 'sort': {
+					switch (args[1]) {
+						case 'name': {
+							const dbData = (await client.birthdays.findAll());
+							if (dbData.length === 0) return message.channel.send('There is *nothing*, add something to be the first');
+							const longestName = getLongestString(dbData.map(function(e) { return e.name })).length;
+							const users = dbData.sort((a, b) => {
+								const nameA = a.name.toUpperCase();
+								const nameB = b.name.toUpperCase();
+								if (nameA < nameB) return -1;
+								if (nameA > nameB) return 1;
+								return 0;
+							})
+								.map(t => {
+									const date = new Date(t.date);
+									return `${t.name.padEnd(longestName + 2, '.')}${firesObjectifier(date.getDate())} ${date.toLocaleString('default', { month: 'long' })}`;
+								});
+							return this.list(message, users);
+							break;
+						}
+					}
+				}
+			}
+		}
+	},
+
+	list: async function(message, users) {
+		const pages = BlockPaginate.createPages(users, 25);
+		const formattedPages = [];
+
+		pages.forEach(page => formattedPages.push(this.format(page)));
+
+		const mesag = await message.channel.send(`${formattedPages[0]}${formattedPages.length > 1 ? `\nPage 1 of ${formattedPages.length}` : ''}\`\`\``);
+		if (formattedPages.length > 1) BlockPaginate.runner(mesag, formattedPages, message.author);
+	},
+
+	format: function(page) {
+		let block = '```diff\n';
+		for (let i = 0; i < page.length; i++) block += `${isEven(i) ? '+' : '='} ${page[i]}\n`;
+		return block;
+	}
+};

@@ -1,0 +1,17 @@
+# Use `npm i` to install them
+/node_modules/
+
+# Token and other secrets
+configRelease.json
+
+# more sssecretss
+configDebug.json
+
+# Runtime data
+/deployData/
+
+# Spotlight
+.DS_Store*
+
+# junk!
+package-lock.json

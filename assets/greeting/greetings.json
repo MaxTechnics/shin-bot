@@ -1,0 +1,8 @@
+{
+  "joinMessages": [
+    "hihi {user}, welcome to this shithole!"
+  ],
+  "leaveMessages": [
+    "welp, {user} escaped from this hell"
+  ]
+}

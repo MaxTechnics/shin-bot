@@ -1,0 +1,11 @@
+{
+    "welcome": {
+        "state": true,
+        "humanizedString": "welcomer"
+    },
+    "randomStatus": {
+        "state": true,
+        "humanizedString": "random status"
+    },
+    "disabledCommands": []
+}
