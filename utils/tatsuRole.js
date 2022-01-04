@@ -106,12 +106,6 @@ const removeRole = async (member, role) => {
 
 const handleRoles = async (client, member, roleID) => {
 	const server = client.guilds.cache.get(client.config.shinServerID);
-	if (!roleID) {
-		tatsuLog(`${member.user.username} is not eligible for any roles`);
-		tatsuLog(`Tatsu runner for ${member.user.username} finished`);
-		return true;
-	}
-	tatsuLog(`Role ID for this score is: = ${roleID}`, `This role is called: ${server.roles.cache.get(roleID).name}`);
 	const level1Role = server.roles.cache.get(shinLevels.level1.roleID);
 	const level2Role = server.roles.cache.get(shinLevels.level2.roleID);
 	const level3Role = server.roles.cache.get(shinLevels.level3.roleID);
@@ -119,6 +113,13 @@ const handleRoles = async (client, member, roleID) => {
 	const level5Role = server.roles.cache.get(shinLevels.level5.roleID);
 
 	const rolesToCheck = [level1Role, level2Role, level3Role, level4Role, level5Role];
+	if (!roleID) {
+		tatsuLog(`${member.user.username} is not eligible for any roles`);
+		rolesToCheck.forEach(async r => { if (member.roles.cache.has(r.id)) await removeRole(member, r); });
+		tatsuLog(`Tatsu runner for ${member.user.username} finished`);
+		return true;
+	}
+	tatsuLog(`Role ID for this score is: = ${roleID}`, `This role is called: ${server.roles.cache.get(roleID).name}`);
 
 	for (const role of rolesToCheck) {
 		if (member.roles.cache.has(role.id) && role.id !== roleID) await removeRole(member, role);
