@@ -7,6 +7,8 @@ module.exports = async (client, member) => {
 
 	const { welcome } = await fs.readJsonSync('./deployData/settings.json', 'utf-8');
 
+	if (!member.roles.cache.has('832294367871107092')) await member.roles.add('832294367871107092'); // Hoob/member role
+
 	tatsuLog(`Tatsu role checking for ${member.user.username} starts in 5 seconds`);
 	setTimeout(() => {
 		tatsuLog(`Running automatic (on member join) Tatsu role check for ${member.user.username} started`);
