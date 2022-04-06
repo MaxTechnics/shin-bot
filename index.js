@@ -1,9 +1,8 @@
 // When I started writing this, only God and I understood what I was doing
-// Now, only God knows
+// Now, only God (shrimp) knows
 const { Client, Intents, Collection } = require('discord.js');
 const fs = require('fs');
 const chalk = require('chalk');
-const TatsuAPI = require('./utils/tatsuAPI.js');
 const client = new Client({
 	intents: [
 		Intents.FLAGS.DIRECT_MESSAGES,
@@ -25,7 +24,7 @@ const client = new Client({
 	]
 });
 const { randomStatus } = require('./utils/statusFunction.js');
-const { birthdaySequelize } = require('./handlers/databases.js');
+const { birthdaySequelize, movieSuggestionSequelize } = require('./handlers/databases.js');
 
 setInterval(function() { randomStatus(client) }, 60 * 30 * 1000); // change status every 30 min
 
@@ -35,6 +34,8 @@ client.cooldowns = new Collection();
 client.aliases = new Collection();
 client.categories = fs.readdirSync('./modules/', { withFileTypes: true }).filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
 client.birthdays = require('./handlers/dbModels/birthdays.js')(birthdaySequelize);
+client.movieSuggestions = require('./handlers/dbModels/movieNightSuggestions.js')(movieSuggestionSequelize);
+
 client.interactions = new Collection();
 client.event = {
 	members: new Set(),

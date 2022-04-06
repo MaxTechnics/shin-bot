@@ -6,4 +6,5 @@ module.exports = async (client) => {
 	console.log(chalk.green(`Alive as ${client.user.tag}`));
 
 	client.birthdays.sync();
+	client.movieSuggestions.sync();
 };

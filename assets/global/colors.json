@@ -4,5 +4,10 @@
     "softBlue": "#3a94ff",
     "Red": "#FF0000",
     "Orange": "#EB8334",
-    "White": "#FFFFFF"
+    "White": "#FFFFFF",
+
+    "suggestionOpen": "#7289DA",
+    "suggestionApproved": "#43B581",
+    "suggestionDenied": "#F04747",
+    "suggestionWatched": "#A758F5"
 }

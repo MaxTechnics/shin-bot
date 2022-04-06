@@ -6,6 +6,13 @@ const birthdaySequelize = new Sequelize({
 	storage: 'deployData/db/birthdays.sqlite'
 });
 
+const movieSuggestionSequelize = new Sequelize({
+	dialect: 'sqlite',
+	logging: false,
+	storage: 'deployData/db/movieNightSuggestions.sqlite'
+});
+
 module.exports = {
-	birthdaySequelize
+	birthdaySequelize,
+	movieSuggestionSequelize
 };
